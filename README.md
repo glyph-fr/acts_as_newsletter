@@ -40,7 +40,7 @@ class Newsletter < ActiveRecord::Base
     emails newsletter.emails_list.emails.pluck(:email)
     # Assuming your mailer views are in app/views/newsletters/
     template_path "newsletters"
-    # Set newsletters/newsletter.(html|text).(erb|haml)
+    # Set newsletters/newsletter.(html|text).erb
     layout "newsletter"
     # Get your mail template dynamically
     template_name newsletter.type.template
