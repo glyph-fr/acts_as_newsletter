@@ -1,0 +1,17 @@
+class <%= migration_class_name %> < ActiveRecord::Migration
+  def self.up
+    change_table :<%= table_name %> do |t|
+      t.string :state
+      t.text :recipients
+      t.integer :recipients_count
+      t.integer :sent_count
+      t.boolean :ready, default: false
+    end
+  end
+
+  def self.down
+    change_table :<%= table_name %> do |t|
+      t.remove :state, :recipients, :readied, :sent_count, :recipients_count
+    end
+  end
+end
