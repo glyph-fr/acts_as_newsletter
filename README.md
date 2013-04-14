@@ -32,7 +32,7 @@ which returns a list of e-mail addresses to which the newsletter will be sent.
 The block is passed the current Newsletter object so you can configure the way
 emails are retrieved for each different newsletter :
 
-```
+```ruby
 class Newsletter < ActiveRecord::Base
   belongs_to :emails_list
 
