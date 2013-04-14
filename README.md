@@ -48,6 +48,33 @@ class Newsletter < ActiveRecord::Base
 end
 ```
 
+## Sending it
+
+Let's suppose you configured your `Newsletter` model, and created your mailer
+view file, so everything is ready to be sent.
+
+All what you need to do is to use the provided default rake task :
+
+```bash
+rake acts_as_newsletter:send_next
+```
+
+But wait ... it doesn't do anything by default since we can't know which model
+is actually a newsletter - well we don't want `acts_as_newsletter` to know it -
+and your sending logic may be custom. So the easiest way to configure it is to
+uncomment the specified block in your
+`config/initializers/acts_as_newsletter.rb` file and define your logic, or let
+the default here :
+
+```ruby
+config.send_next = proc {
+  Newsletter.send_next!
+}
+```
+
+Now run `rake acts_as_newsletter:send_next` and it should send your e-mails !
+
+
 ## Licence
 
 It uses MIT Licence so you can do whatever you want with it
