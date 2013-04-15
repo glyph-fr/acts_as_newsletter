@@ -1,6 +1,6 @@
 namespace :acts_as_newsletter do
   desc "Send the next newsletter emails chunk"
-  task :send_next do
+  task send_next: :environment do
     if (method = ActsAsNewsletter.send_next)
       method.call
     else
