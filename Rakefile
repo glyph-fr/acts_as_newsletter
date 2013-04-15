@@ -1,4 +1,5 @@
 #!/usr/bin/env rake
+
 begin
   require 'bundler/setup'
 rescue LoadError
@@ -26,5 +27,9 @@ Bundler::GemHelper.install_tasks
 require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new(:spec)
+
+Dir[File.expand_path "../lib/tasks/*", __FILE__].each do |task_file|
+  load task_file
+end
 
 task :default => :spec

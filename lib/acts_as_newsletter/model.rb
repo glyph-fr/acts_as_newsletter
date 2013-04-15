@@ -139,5 +139,3 @@ module ActsAsNewsletter
     end
   end
 end
-
-ActiveRecord::Base.send(:include, ActsAsNewsletter)
