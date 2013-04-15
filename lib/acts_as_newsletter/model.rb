@@ -34,6 +34,10 @@ module ActsAsNewsletter
               transition draft: :ready
             end
 
+            event :ready_canceled do
+              transition ready: :draft
+            end
+
             event :prepare_sending do
               transition ready: :sending
             end
@@ -48,6 +52,12 @@ module ActsAsNewsletter
               # state so it can be matched when calling `::next_newsletter`
               before_validation do
                 written! if readied
+              end
+            end
+
+            state :ready do
+              before_validation do
+                ready_canceled! if !readied
               end
             end
 
@@ -94,11 +104,14 @@ module ActsAsNewsletter
     mattr_accessor :emails_chunk_size
     self.emails_chunk_size = 500
 
+    # Boolean allowing us to know if we sent the last emails chunk
+    #
     attr_accessor :chunk_sent
 
     # Newsletter configuration passed to the block
     def newsletter_config
-      @newsletter_config ||= Model::Config.new(&self.class.config_proc).config
+      @newsletter_config ||=
+        Model::Config.new(self, &self.class.config_proc).config
     end
 
 
@@ -123,6 +136,7 @@ module ActsAsNewsletter
     end
 
     def send_newsletter!
+      prepare_sending! if state_name == :ready
       # Get config from newsletter config
       mail_config_keys = [:template_path, :template_name, :layout, :from]
       config = newsletter_config.select do |key, value|

@@ -13,14 +13,30 @@ describe TestNewsletter do
     @newsletter.draft?.should be_true
   end
 
-  it "should transition to ready state when readied switch is se to true" do
+  it "should transition to ready state when readied switch is set to true" do
     @newsletter.readied = true
     @newsletter.save
     @newsletter.state_name.should eq :ready
   end
 
+  it "should transition back to draft state if readied is set to false" do
+    @newsletter.readied = true
+    @newsletter.save
+    @newsletter.readied = false
+    @newsletter.save
+    @newsletter.state_name.should eq :draft
+  end
+
+  it "should prepare sending when #send_newsletter! is called" do
+    @newsletter.readied = true
+    @newsletter.save
+    @newsletter.send_newsletter!
+    @newsletter.emails.length.should eq EMAILS_CHUNK_SIZE
+  end
+
   it "should prepare recipients when asked to" do
-    @newsletter.written!
+    @newsletter.readied = true
+    @newsletter.save
     @newsletter.prepare_sending!
     @newsletter.state_name.should eq :sending
     @newsletter.emails.should include("user-0@example.com")
@@ -31,7 +47,8 @@ describe TestNewsletter do
 
   context "Sending" do
     before(:each) do
-      @newsletter.written!
+      @newsletter.readied = true
+      @newsletter.save
       @newsletter.prepare_sending!
     end
 

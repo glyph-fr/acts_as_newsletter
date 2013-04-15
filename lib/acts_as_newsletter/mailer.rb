@@ -1,5 +1,3 @@
-require 'action_mailer'
-
 module ActsAsNewsletter
   class Mailer < ActionMailer::Base
     # Allows setting a general <From> header by configuring it in the

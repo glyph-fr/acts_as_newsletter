@@ -27,8 +27,8 @@ unless defined? TestNewsletter
     # AcsAsNewsletter created fields
     attr_accessor :state, :recipients, :recipients_count, :sent_count, :readied
 
-    acts_as_newsletter do |newsletter|
-      emails RECIPIENTS_EMAILS
+    acts_as_newsletter do
+      emails model.temp_emails
       # template_name ""
       # template_path ""
       layout false
@@ -37,6 +37,10 @@ unless defined? TestNewsletter
     def initialize(*)
       super
       send(:initialize_state_machines, :dynamic => :force)
+    end
+
+    def temp_emails
+      RECIPIENTS_EMAILS
     end
   end
 end
