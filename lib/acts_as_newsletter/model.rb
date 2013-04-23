@@ -145,7 +145,9 @@ module ActsAsNewsletter
 
       # Send e-mail to each recipient
       emails.each do |email|
-        ActsAsNewsletter::Mailer.newsletter(self, email, config).deliver
+        ActsAsNewsletter::Mailer.newsletter(
+          self, email, config, newsletter_config[:before_process]
+        ).deliver
       end
 
       self.chunk_sent = true

@@ -85,6 +85,5 @@ describe TestNewsletter do
       actual_recipients = ActionMailer::Base.deliveries.map(&:to).flatten
       actual_recipients.should eq expected_recipients
     end
-
   end
 end

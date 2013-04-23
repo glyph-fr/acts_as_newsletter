@@ -29,6 +29,11 @@ unless defined? TestNewsletter
 
     acts_as_newsletter do
       emails model.temp_emails
+      # Custom data Hash
+      before_process proc {
+        data = @email.split('@')
+        @data = { name: data.first, domain: data.last }
+      }
       # template_name ""
       # template_path ""
       layout false
