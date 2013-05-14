@@ -61,6 +61,7 @@ describe TestNewsletter do
         first_emails = @newsletter.emails
         @newsletter.send_newsletter!
         second_emails = @newsletter.emails
+        # raise "#{ first_emails.inspect } -- #{ second_emails.inspect }"
         second_emails.should_not eq first_emails
       end
     end
@@ -68,7 +69,6 @@ describe TestNewsletter do
     it "should update sent emails counter when a chunk is sent" do
       expected_recipients = @newsletter.emails
       @newsletter.send_newsletter!
-      @newsletter.save
       @newsletter.sent_count.should eq EMAILS_CHUNK_SIZE
 
       actual_recipients = ActionMailer::Base.deliveries.map(&:to).flatten
@@ -84,6 +84,14 @@ describe TestNewsletter do
 
       actual_recipients = ActionMailer::Base.deliveries.map(&:to).flatten
       actual_recipients.should eq expected_recipients
+    end
+
+    context "before process block" do
+      it "can return false so e-mail is not sent" do
+        @newsletter.newsletter_config[:before_process] = proc { false }
+        @newsletter.send_newsletter!
+        ActionMailer::Base.deliveries.length.should eq 0
+      end
     end
   end
 end

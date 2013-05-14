@@ -12,13 +12,13 @@ module ActsAsNewsletter
       @email = email
 
       # Custom before_process to be processed here
-      instance_eval &before_process if before_process
+      valid = instance_eval &before_process if before_process
 
       mail mail_config.merge(
         to: email,
         subject: newsletter.subject,
         from: (mail_config[:from] or from)
-      )
+      ) if valid
     end
   end
 end

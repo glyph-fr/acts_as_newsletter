@@ -1,5 +1,5 @@
 module ActsAsNewsletter
-  mattr_accessor :send_next
+  mattr_accessor :send_next, :on_send_exception
 
   class Config
     # Define classes config accessors

@@ -145,9 +145,21 @@ module ActsAsNewsletter
 
       # Send e-mail to each recipient
       emails.each do |email|
-        ActsAsNewsletter::Mailer.newsletter(
-          self, email, config, newsletter_config[:before_process]
-        ).deliver
+        begin
+          mail = ActsAsNewsletter::Mailer.newsletter(
+            self, email, config, newsletter_config[:before_process]
+          )
+          # Allows return false or nil in before_process block so the e-mail
+          # is not processed
+          mail.deliver if mail
+        rescue => e
+          # Allows to rescue send exceptions
+          if ActsAsNewsletter.on_send_exception
+            ActsAsNewsletter.on_send_exception.call(e, email, config)
+          else
+            raise e
+          end
+        end
       end
 
       self.chunk_sent = true

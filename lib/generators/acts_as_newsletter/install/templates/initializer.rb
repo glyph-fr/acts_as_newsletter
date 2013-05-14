@@ -19,4 +19,10 @@ ActsAsNewsletter.config do |config|
   # config.send_next = proc {
   #   Newsletter.send_next!
   # }
+
+  # Rescuing send error
+  #
+  # config.on_send_exception = proc { |exception, email, config|
+  #   ExceptionMailer.send()
+  # }
 end
