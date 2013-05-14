@@ -15,7 +15,7 @@ unless defined? TestNewsletter
 
   ActsAsNewsletter::Mailer.from = "contact@example.com"
 
-  EMAILS_CHUNK_SIZE = 2
+  EMAILS_CHUNK_SIZE = 5
   RECIPIENTS_COUNT = (2.5 * EMAILS_CHUNK_SIZE).to_i
   RECIPIENTS_EMAILS = RECIPIENTS_COUNT.times.map { |n| "user-#{ n }@example.com" }
 

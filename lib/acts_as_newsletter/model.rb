@@ -67,10 +67,10 @@ module ActsAsNewsletter
               #
               before_validation do
                 if chunk_sent
-                  self.recipients = emails.join("|")
+                  self.recipients = available_emails.join("|")
                   self.sent_count += emails.length
                   # Transition to :sent state when complete
-                  sending_complete! if sent_count == recipients_count
+                  sending_complete! if sent_count >= recipients_count
                 end
               end
 
