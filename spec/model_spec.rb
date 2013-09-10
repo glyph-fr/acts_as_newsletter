@@ -61,7 +61,6 @@ describe TestNewsletter do
         first_emails = @newsletter.emails
         @newsletter.send_newsletter!
         second_emails = @newsletter.emails
-        # raise "#{ first_emails.inspect } -- #{ second_emails.inspect }"
         second_emails.should_not eq first_emails
       end
     end

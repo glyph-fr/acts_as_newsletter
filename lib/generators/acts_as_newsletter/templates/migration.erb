@@ -5,7 +5,7 @@ class <%= migration_class_name %> < ActiveRecord::Migration
       t.text :recipients
       t.integer :recipients_count
       t.integer :sent_count
-      t.boolean :ready, default: false
+      t.boolean :readied, default: false
     end
   end
 

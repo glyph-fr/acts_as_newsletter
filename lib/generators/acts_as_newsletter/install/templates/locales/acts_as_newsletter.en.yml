@@ -1,0 +1,7 @@
+en:
+  acts_as_newsletter:
+    states:
+      draft: Draft
+      ready: Ready to be sent
+      sending: Sending in progress
+      sent: Sent

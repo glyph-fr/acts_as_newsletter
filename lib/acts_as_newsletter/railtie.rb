@@ -12,6 +12,10 @@ module ActsAsNewsletter
       ActiveSupport.on_load :action_controller do
         ActsAsNewsletter::Mailer.send(:add_template_helper, ::ApplicationHelper)
       end
+
+      ActiveSupport.on_load :action_view do
+        ActionView::Base.send(:include, ActsAsNewsletter::ViewHelper)
+      end
     end
 
     rake_tasks { load "tasks/acts_as_newsletter.rake" }

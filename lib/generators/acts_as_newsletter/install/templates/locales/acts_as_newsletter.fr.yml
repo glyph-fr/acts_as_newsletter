@@ -1,0 +1,7 @@
+fr:
+  acts_as_newsletter:
+    states:
+      draft: Rédaction
+      ready: Prête à l'envoi
+      sending: Envoi en cours
+      sent: Envoyée

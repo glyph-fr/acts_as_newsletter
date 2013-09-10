@@ -7,6 +7,11 @@ module ActsAsNewsletter
       def copy_initializer
         copy_file "initializer.rb", "config/initializers/acts_as_newsletter.rb"
       end
+
+      def copy_translations
+        copy_file "locales/acts_as_newsletter.fr.yml", "config/locales/acts_as_newsletter.fr.yml"
+        copy_file "locales/acts_as_newsletter.en.yml", "config/locales/acts_as_newsletter.en.yml"
+      end
     end
   end
 end

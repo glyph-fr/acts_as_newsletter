@@ -29,4 +29,5 @@ end
 
 require 'acts_as_newsletter/model'
 require 'acts_as_newsletter/mailer'
+require 'acts_as_newsletter/view_helper'
 require 'acts_as_newsletter/railtie' if defined?(Rails)
