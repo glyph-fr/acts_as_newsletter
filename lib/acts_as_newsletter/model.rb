@@ -89,13 +89,13 @@ module ActsAsNewsletter
       # Send next newsletter if one is ready
       #
       def send_next!
-        (newsletter = next_newsletter) and newsletter.send_newsletter!
+        (newsletter = next_newsletter) && newsletter.send_newsletter!
       end
 
       # Finds first newsletter being sent or ready
       #
       def next_newsletter
-        where(state: :sending).first or where(state: :ready).first
+        where(state: :sending).first || where(state: :ready).first
       end
     end
 

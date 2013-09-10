@@ -8,7 +8,7 @@ module ActsAsNewsletter
         @config = { emails: [], layout: false }
         @model = model
         # Eval block to edit config
-        instance_eval &block if block_given?
+        instance_exec(model, &block) if block_given?
       end
 
       %w(emails before_process template_path template_name layout from).each do |method|
