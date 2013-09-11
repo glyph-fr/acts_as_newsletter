@@ -10,6 +10,11 @@ ActsAsNewsletter.config do |config|
   #
   # config.mailer.from = "contact@example.com"
 
+  # Adds template helpers to the newsletter mailer to be accessed by you
+  # views templates
+  #
+  # config.mailer.template_helpers = %w(ApplicationHelper)
+
   # Sending logic to be used from the default `acts_as_newsletter:send_next`
   # rake task
   #

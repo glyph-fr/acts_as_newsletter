@@ -5,6 +5,16 @@ module ActsAsNewsletter
     #
     cattr_accessor :from
 
+    class << self
+      def template_helpers=(helpers)
+        ActiveSupport.on_load :action_controller do
+          helpers.each do |helper|
+            ActsAsNewsletter::Mailer.send(:add_template_helper, helper.constantize)
+          end
+        end
+      end
+    end
+
     # Sends the actual newsletter to the specified email
     #
     def newsletter newsletter, email, mail_config, before_process
@@ -12,7 +22,9 @@ module ActsAsNewsletter
       @email = email
 
       # Custom before_process to be processed here
-      valid = instance_eval &before_process if before_process
+      valid = before_process ? instance_eval(&before_process) : true
+
+      puts "Sending e-mail to #{ email } -- Valid ? #{ valid.inspect }"
 
       mail mail_config.merge(
         to: email,
