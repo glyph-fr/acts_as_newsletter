@@ -82,6 +82,12 @@ module ActsAsNewsletter
                 @emails = nil
               end
             end
+
+            state :sending, :sent do
+              def editable?
+                false
+              end
+            end
           end
         end
       end
@@ -133,6 +139,10 @@ module ActsAsNewsletter
     # Takes emails from the list and delete them from it
     def emails
       @emails ||= available_emails.shift(emails_chunk_size)
+    end
+
+    def editable?
+      true
     end
 
     def send_newsletter!
