@@ -3,7 +3,7 @@ module ActsAsNewsletter
     # Allows setting a general <From> header by configuring it in the
     # initializer
     #
-    cattr_accessor :from
+    cattr_accessor :from, :reply_to
 
     class << self
       def template_helpers=(helpers)
@@ -26,11 +26,17 @@ module ActsAsNewsletter
 
       puts "Sending e-mail to #{ email } -- Valid ? #{ valid.inspect }"
 
-      mail mail_config.merge(
-        to: email,
-        subject: newsletter.subject,
-        from: (mail_config[:from] or from)
-      ) if valid
+      return unless valid
+
+      # Prepare #mail hash argument
+      params = mail_config.merge(to: email, subject: newsletter.subject)
+
+      # Add from and reply_to params
+      params[:from] ||= from
+      params[:reply_to] ||= reply_to || params[:from]
+
+      # Prepare e-mail
+      mail(params)
     end
   end
 end

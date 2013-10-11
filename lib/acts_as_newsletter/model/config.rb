@@ -11,7 +11,7 @@ module ActsAsNewsletter
         instance_exec(model, &block) if block_given?
       end
 
-      %w(emails before_process template_path template_name layout from).each do |method|
+      %w(emails before_process template_path template_name layout from reply_to).each do |method|
         define_method method do |value|
           @config[method.to_sym] = value
         end

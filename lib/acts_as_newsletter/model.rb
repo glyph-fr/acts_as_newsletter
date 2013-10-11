@@ -148,7 +148,7 @@ module ActsAsNewsletter
     def send_newsletter!
       prepare_sending! if state_name == :ready
       # Get config from newsletter config
-      mail_config_keys = [:template_path, :template_name, :layout, :from]
+      mail_config_keys = [:template_path, :template_name, :layout, :from, :reply_to]
       config = newsletter_config.select do |key, value|
         mail_config_keys.include?(key) and value
       end
