@@ -120,7 +120,6 @@ module ActsAsNewsletter
         Model::Config.new(self, &self.class.config_proc).config
     end
 
-
     # Prepare model to handle e-mail sending collecting e-mails and
     # initializing counters
     #
