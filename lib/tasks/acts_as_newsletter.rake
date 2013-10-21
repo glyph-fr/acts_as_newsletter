@@ -1,3 +1,5 @@
+require "tasks/helpers/newsletters_table"
+
 namespace :acts_as_newsletter do
   desc "Send the next newsletter emails chunk"
   task send_next: :environment do
@@ -14,5 +16,12 @@ config.send_next = proc {
 }
 ERROR
     end
+  end
+
+  desc "Check status of newsletters"
+  task status: :environment do
+    newsletters = Newsletter.order("created_at DESC").all
+    table = NewslettersTable.new(newsletters)
+    puts table.render
   end
 end
