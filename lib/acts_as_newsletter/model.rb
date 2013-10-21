@@ -47,6 +47,11 @@ module ActsAsNewsletter
               transition sending: :sent
             end
 
+            event :cancel do
+              transition any => :draft
+            end
+            after_transition on: :cancel, do: :reset_sending
+
             state :draft do
               # If readied is set to true, then we transition to the `ready`
               # state so it can be matched when calling `::next_newsletter`
@@ -143,6 +148,14 @@ module ActsAsNewsletter
 
     def editable?
       true
+    end
+
+    def reset_sending
+      self.recipients_count = 0
+      self.sent_count = 0
+      self.recipients = ""
+      self.readied = false
+      save!
     end
 
     def send_newsletter!
