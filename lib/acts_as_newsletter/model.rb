@@ -100,7 +100,7 @@ module ActsAsNewsletter
       # Send next newsletter if one is ready
       #
       def send_next!
-        (newsletter = next_newsletter) && newsletter.send_newsletter!
+        (newsletter = next_newsletter) && newsletter.send_newsletter! || 0
       end
 
       # Finds first newsletter being sent or ready
@@ -166,14 +166,17 @@ module ActsAsNewsletter
       end
 
       # Send e-mail to each recipient
-      emails.each do |email|
+      sent = emails.reduce(0) do |count, email|
         begin
           mail = ActsAsNewsletter::Mailer.newsletter(
             self, email, config, newsletter_config[:before_process]
           )
           # Allows return false or nil in before_process block so the e-mail
           # is not processed
-          mail.deliver if mail
+          if mail
+            mail.deliver
+            count += 1
+          end
         rescue => e
           # Allows to rescue send exceptions
           if ActsAsNewsletter.on_send_exception
@@ -182,10 +185,14 @@ module ActsAsNewsletter
             raise e
           end
         end
+
+        count
       end
 
       self.chunk_sent = true
       save
+      # Return sent count
+      sent
     end
   end
 end
