@@ -24,8 +24,6 @@ module ActsAsNewsletter
       # Custom before_process to be processed here
       valid = before_process ? instance_eval(&before_process) : true
 
-      puts "Sending e-mail to #{ email } -- Valid ? #{ valid.inspect }"
-
       return unless valid
 
       # Prepare #mail hash argument

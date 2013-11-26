@@ -94,6 +94,8 @@ module ActsAsNewsletter
               end
             end
           end
+
+          scope :unlocked, -> { where(send_lock: false) }
         end
       end
 
@@ -106,7 +108,8 @@ module ActsAsNewsletter
       # Finds first newsletter being sent or ready
       #
       def next_newsletter
-        where(state: :sending).first || where(state: :ready).first
+        unlocked.where(state: :sending).first ||
+          unlocked.where(state: :ready).first
       end
     end
 
@@ -158,41 +161,61 @@ module ActsAsNewsletter
     end
 
     def send_newsletter!
-      prepare_sending! if state_name == :ready
-      # Get config from newsletter config
-      mail_config_keys = [:template_path, :template_name, :layout, :from, :reply_to]
-      config = newsletter_config.select do |key, value|
-        mail_config_keys.include?(key) and value
-      end
-
-      # Send e-mail to each recipient
-      sent = emails.reduce(0) do |count, email|
-        begin
-          mail = ActsAsNewsletter::Mailer.newsletter(
-            self, email, config, newsletter_config[:before_process]
-          )
-          # Allows return false or nil in before_process block so the e-mail
-          # is not processed
-          if mail
-            mail.deliver
-            count += 1
-          end
-        rescue => e
-          # Allows to rescue send exceptions
-          if ActsAsNewsletter.on_send_exception
-            ActsAsNewsletter.on_send_exception.call(e, email, config)
-          else
-            raise e
-          end
+      if send_locked?
+        0
+      else
+        lock_sending
+        prepare_sending! if state_name == :ready
+        # Get config from newsletter config
+        mail_config_keys = [:template_path, :template_name, :layout, :from, :reply_to]
+        config = newsletter_config.select do |key, value|
+          mail_config_keys.include?(key) and value
         end
 
-        count
-      end
+        # Send e-mail to each recipient
+        sent = emails.reduce(0) do |count, email|
+          begin
+            mail = ActsAsNewsletter::Mailer.newsletter(
+              self, email, config, newsletter_config[:before_process]
+            )
+            # Allows return false or nil in before_process block so the e-mail
+            # is not processed
+            if mail
+              mail.deliver
+              count += 1
+            end
+          rescue => e
+            # Allows to rescue send exceptions
+            if ActsAsNewsletter.on_send_exception
+              ActsAsNewsletter.on_send_exception.call(e, email, config)
+            else
+              raise e
+            end
+          end
 
-      self.chunk_sent = true
-      save
-      # Return sent count
-      sent
+          count
+        end
+
+        self.chunk_sent = true
+        save
+        # Return sent count
+        # Unlock
+        unlock_sending
+
+        sent
+      end
+    end
+
+    def lock_sending
+      self.update_column(:send_lock, true)
+    end
+
+    def unlock_sending
+      self.update_column(:send_lock, false)
+    end
+
+    def send_locked?
+      send_lock
     end
   end
 end

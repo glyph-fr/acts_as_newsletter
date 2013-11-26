@@ -11,6 +11,7 @@ unless defined? TestNewsletter
     t.integer :recipients_count
     t.integer :sent_count
     t.boolean :readied, default: false
+    t.boolean :send_lock, default: false
   end
 
   ActsAsNewsletter::Mailer.from = "contact@example.com"

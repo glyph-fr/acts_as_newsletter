@@ -92,5 +92,41 @@ describe TestNewsletter do
         ActionMailer::Base.deliveries.length.should eq 0
       end
     end
+
+    context "#send_newsletter!", focus: true do
+      it "sends one email per recipient" do
+        expect(ActsAsNewsletter::Mailer).to receive(:newsletter)
+          .exactly(EMAILS_CHUNK_SIZE).times
+
+        @newsletter.send_newsletter!
+      end
+
+      it "locks sending on the newsletter while sending" do
+        expect(@newsletter).to receive(:lock_sending)
+
+        @newsletter.send_newsletter!
+      end
+
+      it "unlocks sending on the newsletter while sending" do
+        expect(@newsletter).to receive(:unlock_sending)
+
+        @newsletter.send_newsletter!
+      end
+    end
+
+    context "#lock_sending", focus: true do
+      it "marks the newsletter as locked" do
+        @newsletter.lock_sending
+        @newsletter.reload.send_lock.should eq true
+      end
+    end
+
+    context "#unlock_sending", focus: true do
+      it "marks the newsletter as unlocked" do
+        @newsletter.lock_sending
+        @newsletter.unlock_sending
+        @newsletter.reload.send_lock.should eq false
+      end
+    end
   end
 end

@@ -6,12 +6,14 @@ class <%= migration_class_name %> < ActiveRecord::Migration
       t.integer :recipients_count
       t.integer :sent_count
       t.boolean :readied, default: false
+      t.boolean :send_lock, default: false
     end
   end
 
   def self.down
     change_table :<%= table_name %> do |t|
-      t.remove :state, :recipients, :readied, :sent_count, :recipients_count
+      t.remove :state, :recipients, :readied, :sent_count, :recipients_count,
+        :send_lock
     end
   end
 end
