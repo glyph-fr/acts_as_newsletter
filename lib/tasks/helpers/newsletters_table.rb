@@ -6,7 +6,7 @@ class NewslettersTable
   end
 
   def headers
-    @headers ||= %w(id subject state sent recipients date)
+    @headers ||= %w(id subject state locked sent recipients date)
   end
 
   def format item
@@ -14,6 +14,7 @@ class NewslettersTable
       item.id.to_s,
       item.subject,
       item.state,
+      item.send_lock ? 'true' : 'false',
       item.sent_count.to_s,
       item.recipients_count.to_s,
       item.created_at.to_s
